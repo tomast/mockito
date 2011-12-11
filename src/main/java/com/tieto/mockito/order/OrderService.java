@@ -1,4 +1,4 @@
-package com.tieto.mockito;
+package com.tieto.mockito.order;
 
 public class OrderService {
 	

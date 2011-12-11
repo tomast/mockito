@@ -1,4 +1,4 @@
-package com.tieto.mockito;
+package com.tieto.mockito.order;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.tieto.mockito.order.OrderConnector;
+import com.tieto.mockito.order.OrderService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrderServiceTest {
