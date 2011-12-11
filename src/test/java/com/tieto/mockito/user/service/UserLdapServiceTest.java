@@ -40,6 +40,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -58,6 +59,7 @@ public class UserLdapServiceTest {
     @Mock
     private UserRoleRepository userRoleRepositoryMock;
 
+    @InjectMocks
     private UserLdapService service;
 
     /**
@@ -66,7 +68,6 @@ public class UserLdapServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new UserLdapService(ldapConnectorMock, userRoleRepositoryMock);
     }
 
     /**
