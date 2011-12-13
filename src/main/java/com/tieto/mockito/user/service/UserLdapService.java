@@ -55,10 +55,25 @@ public class UserLdapService implements UserService {
         final User user = this.userLdapConnector.getUser(id);
 
         if (user == null) {
-            throw new RuntimeException(String.format("User %s not found.", id));
+            throw new RuntimeException(String.format("User '%s' not found.", id));
         }
         user.getRoles().addAll(this.userRoleRepository.getRolesForUser(id));
 
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addRoleToUser(String userId, String... roles) {
+        final User user = getUser(userId);
+
+        for (String role : roles) {
+            if (user.getRoles().contains(role)) {
+                throw new RuntimeException(String.format("User '%s' already has role '%s'.", userId, role));
+            }
+        }
+        this.userRoleRepository.addRoleToUser(userId, roles);
     }
 }

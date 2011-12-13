@@ -38,4 +38,6 @@ public interface UserService {
 
     User getUser(String id);
 
+    void addRoleToUser(String userId, String... roles);
+
 }
