@@ -28,10 +28,14 @@
  */
 package com.tieto.mockito.user.service;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
@@ -54,6 +58,14 @@ import com.tieto.mockito.user.repository.UserRoleRepository;
  */
 public class UserLdapServiceTest {
 
+    /**
+     * 
+     */
+    private static final String USER_ROLE = "USER";
+    private static final String USER_ID = "totu2222";
+    private final User expectedUser = new User(USER_ID, "Tomas", "Turek");
+    private final Set<String> roles = new HashSet<String>();
+
     @Mock
     private UserLdapConnector ldapConnectorMock;
     @Mock
@@ -68,6 +80,8 @@ public class UserLdapServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
+        roles.add("ADMIN");
     }
 
     /**
@@ -77,20 +91,14 @@ public class UserLdapServiceTest {
      */
     @Test
     public void testGetUserHappyPath() {
-        String id = "totu2222";
-        final User expectedUser = new User(id, "Tomas", "Turek");
-
-        final Set<String> roles = new HashSet<String>();
-        roles.add("ADMIN");
-
         when(ldapConnectorMock.getUser(anyString())).thenReturn(expectedUser);
-        when(userRoleRepositoryMock.getRolesForUser(id)).thenReturn(roles);
+        when(userRoleRepositoryMock.getRolesForUser(USER_ID)).thenReturn(roles);
 
-        final User actualUser = service.getUser(id);
+        final User actualUser = service.getUser(USER_ID);
 
         InOrder inOrder = inOrder(ldapConnectorMock, userRoleRepositoryMock);
-        inOrder.verify(ldapConnectorMock).getUser(id);
-        inOrder.verify(userRoleRepositoryMock).getRolesForUser(id);
+        inOrder.verify(ldapConnectorMock).getUser(USER_ID);
+        inOrder.verify(userRoleRepositoryMock).getRolesForUser(USER_ID);
         inOrder.verifyNoMoreInteractions();
 
         assertNotNull(actualUser);
@@ -104,8 +112,28 @@ public class UserLdapServiceTest {
      */
     @Test(expected = RuntimeException.class)
     public void testGetUserNotFound() {
-        String id = "totu2222";
+        service.getUser(USER_ID);
+    }
 
-        service.getUser(id);
+    /**
+     * Test method for
+     * {@link com.tieto.mockito.user.service.UserLdapService#addRoleToUser(String, String...)}
+     * .
+     */
+    @Test
+    public void addRoleToUserBDT() {
+        // given
+        given(ldapConnectorMock.getUser(USER_ID)).willReturn(expectedUser);
+        given(userRoleRepositoryMock.getRolesForUser(USER_ID)).willReturn(roles);
+
+        // when
+        this.service.addRoleToUser(USER_ID, USER_ROLE);
+
+        // then
+        assertThat(expectedUser.getRoles(), hasItem(USER_ROLE));
+
+        verify(ldapConnectorMock).getUser(USER_ID);
+        verify(userRoleRepositoryMock).getRolesForUser(USER_ID);
+        verify(userRoleRepositoryMock).addRoleToUser(USER_ID, USER_ROLE);
     }
 }

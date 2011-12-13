@@ -28,6 +28,8 @@
  */
 package com.tieto.mockito.user.service;
 
+import java.util.Arrays;
+
 import com.tieto.mockito.user.connector.UserLdapConnector;
 import com.tieto.mockito.user.domain.User;
 import com.tieto.mockito.user.repository.UserRoleRepository;
@@ -74,6 +76,7 @@ public class UserLdapService implements UserService {
                 throw new RuntimeException(String.format("User '%s' already has role '%s'.", userId, role));
             }
         }
+        user.getRoles().addAll(Arrays.asList(roles));
         this.userRoleRepository.addRoleToUser(userId, roles);
     }
 }
