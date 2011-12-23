@@ -34,6 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,7 +92,7 @@ public class UserLdapServiceTest {
      */
     @Test
     public void testGetUserHappyPath() {
-        when(ldapConnectorMock.getUser(anyString())).thenReturn(expectedUser);
+        when(ldapConnectorMock.getUser(eq(USER_ID))).thenReturn(expectedUser);
         when(userRoleRepositoryMock.getRolesForUser(USER_ID)).thenReturn(roles);
 
         final User actualUser = service.getUser(USER_ID);
